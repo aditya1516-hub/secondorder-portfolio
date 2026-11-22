@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SecondOrder Simulation Mode</title>
+  <link rel="stylesheet" href="./launcher.css?v=20260721-1">
+  <script src="./hosted-runtime.js"></script>
+</head>
+<body>
+  <main class="launcher-shell">
+    <header>
+      <span>Strategic simulation platform</span>
+      <img src="./assets/secondorder-logo.png" alt="SecondOrder">
+      <h1>Choose how this session will be assessed.</h1>
+      <p>Both modes use the same deterministic simulation. AI is optional and supports boardroom consultation and the final learning assessment.</p>
+    </header>
+
+    <section class="mode-grid" aria-label="Simulation modes">
+      <a class="mode-card standard" href="./pm-interface.html">
+        <span class="mode-tag">Default</span>
+        <div class="mode-icon" aria-hidden="true"><i></i><i></i><i></i></div>
+        <h2>Standard Simulation</h2>
+        <p>Run the original deterministic experience with its existing report card. No external AI assessment is requested.</p>
+        <ul><li>Original interface</li><li>Deterministic outcomes</li><li>No API usage</li></ul>
+        <strong>Open standard mode <b>→</b></strong>
+      </a>
+
+      <a id="aiModeCard" class="mode-card ai" href="./pm-interface-ai.html">
+        <span class="mode-tag">Optional</span>
+        <div class="mode-icon ai-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+        <h2>AI-Assessed Simulation</h2>
+        <p>Run the same simulation, then automatically generate an evidence-cited analysis of reasoning and behaviour.</p>
+        <ul><li>Full session evidence</li><li>Boardroom and emergency analysis</li><li>Automatic final assessment</li></ul>
+        <strong>Open AI-assessed mode <b>→</b></strong>
+      </a>
+    </section>
+
+    <div id="configurationNote" class="configuration-note">Checking optional assessment configuration...</div>
+    <footer>The AI layer cannot alter simulation outcomes or deterministic scores.</footer>
+  </main>
+
+  <section id="apiKeyModal" class="key-modal hidden" role="dialog" aria-modal="true" aria-labelledby="apiKeyTitle">
+    <div class="key-dialog">
+      <span class="key-kicker">Private session setup</span>
+      <h2 id="apiKeyTitle">Connect the AI assessor</h2>
+      <p>Enter your API key to enable boardroom consultation and the final assessment. It is encrypted for this browser session and expires after four hours. Standard mode uses no AI tokens.</p>
+      <label for="apiKeyInput">OpenAI API key</label>
+      <div class="key-input-row">
+        <input id="apiKeyInput" type="password" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Enter API key">
+        <button id="toggleKeyBtn" class="key-toggle" type="button" aria-label="Show API key">Show</button>
+      </div>
+      <p id="keyError" class="key-error" aria-live="polite"></p>
+      <div class="key-actions">
+        <button id="cancelKeyBtn" class="secondary" type="button">Cancel</button>
+        <button id="enableAiBtn" type="button">Enable AI Simulation</button>
+      </div>
+      <small>Your key is never included in the Site source, reports or simulation saves. AI requests happen when you ask the board or reach the final assessment in AI mode.</small>
+    </div>
+  </section>
+  <script>
+    const aiCard = document.getElementById("aiModeCard");
+    const keyModal = document.getElementById("apiKeyModal");
+    const keyInput = document.getElementById("apiKeyInput");
+    const keyError = document.getElementById("keyError");
+    const enableAiBtn = document.getElementById("enableAiBtn");
+    let aiConfigured = false;
+
+    function closeKeyDialog() {
+      keyModal.classList.add("hidden");
+      keyInput.value = "";
+      keyInput.type = "password";
+      keyError.textContent = "";
+    }
+
+    aiCard.addEventListener("click", async (event) => {
+      event.preventDefault();
+      await configurationReady;
+      if (aiConfigured) {
+        window.location.assign(aiCard.href);
+        return;
+      }
+      keyModal.classList.remove("hidden");
+      requestAnimationFrame(() => keyInput.focus());
+    });
+
+    document.getElementById("cancelKeyBtn").addEventListener("click", closeKeyDialog);
+    keyModal.addEventListener("click", (event) => { if (event.target === keyModal) closeKeyDialog(); });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape" && !keyModal.classList.contains("hidden")) closeKeyDialog(); });
+    document.getElementById("toggleKeyBtn").addEventListener("click", (event) => {
+      const showing = keyInput.type === "text";
+      keyInput.type = showing ? "password" : "text";
+      event.currentTarget.textContent = showing ? "Show" : "Hide";
+      event.currentTarget.setAttribute("aria-label", showing ? "Show API key" : "Hide API key");
+    });
+
+    async function enableAiSimulation() {
+      const apiKey = keyInput.value.trim();
+      if (!apiKey) {
+        keyError.textContent = "Enter an API key to continue.";
+        return;
+      }
+      enableAiBtn.disabled = true;
+      enableAiBtn.textContent = "Connecting...";
+      keyError.textContent = "";
+      try {
+        const response = await fetch("/api/configure-key", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ apiKey }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "The API key could not be configured.");
+        keyInput.value = "";
+        window.location.assign("./pm-interface-ai.html");
+      } catch (error) {
+        keyError.textContent = error.message;
+      } finally {
+        enableAiBtn.disabled = false;
+        enableAiBtn.textContent = "Enable AI Simulation";
+      }
+    }
+
+    enableAiBtn.addEventListener("click", enableAiSimulation);
+    keyInput.addEventListener("keydown", (event) => { if (event.key === "Enter") enableAiSimulation(); });
+
+    const configurationReady = fetch("/api/assessment-health", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((health) => {
+        const note = document.getElementById("configurationNote");
+        const card = document.getElementById("aiModeCard");
+        aiConfigured = Boolean(health.configured);
+        note.textContent = health.configured
+          ? `AI assessment ready · ${health.model} · ${health.storage === "server" ? "managed by site owner; no key needed" : "key active for this browser session"}`
+          : "AI mode will ask for an API key when selected. Standard mode is ready without one.";
+        note.classList.toggle("ready", Boolean(health.configured));
+        card.classList.toggle("not-configured", !health.configured);
+      })
+      .catch(() => {
+        document.getElementById("configurationNote").textContent = "Standard mode is ready. Reload this page to reconnect the optional AI service.";
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,607 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SecondOrder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./pm-interface.css">
+  <link rel="stylesheet" href="./pm-interface-theme.css?v=20260830-1">
+  <script src="./hosted-runtime.js?v=20261105-2"></script>
+  <link rel="stylesheet" href="./final-review.css?v=20261105-1">
+  <link rel="stylesheet" href="./simulation-workspaces.css?v=20261106-2">
+  <link rel="stylesheet" href="./emergency-room.css?v=20261107-1">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <main class="shell">
+    <section id="entryFlow" class="entry-flow">
+      <article id="introScreen" class="card flow-screen">
+        <div class="flow-copy">
+          <p class="kicker">Simulation Learning Platform</p>
+          <h1 class="brand-logo-frame brand-logo-hero">
+            <img class="brand-logo-image" src="./assets/secondorder-logo.png" alt="SecondOrder">
+          </h1>
+          <p class="lead">
+            Practice decision-making under uncertainty across governance, business,
+            economics, geopolitics, and strategy.
+          </p>
+          <p class="flow-text">
+            You will not get simple win-or-lose outcomes. Each decision creates second-order
+            effects: stakeholder reactions, market pressure, institutional constraints, public
+            confidence, execution risk, and delayed consequences.
+          </p>
+          <div class="flow-actions">
+            <button id="beginBriefingBtn">Begin Briefing</button>
+            <button id="resumeSavedBtn" class="ghost">Resume Saved Simulation</button>
+          </div>
+        </div>
+        <div class="card flow-side">
+          <h2>What This App Does</h2>
+          <div class="brief-list">
+            <div class="brief-item"><strong>Scenario dashboard</strong><span>Tracks the status variables that matter in the selected case.</span></div>
+            <div class="brief-item"><strong>Scenario MCQs</strong><span>Lets you choose controlled strategic options while the simulator models second-order effects.</span></div>
+            <div class="brief-item"><strong>Real-world consequences</strong><span>Models trade-offs, stakeholder incentives, resource limits, and delayed second-order effects.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article id="setupScreen" class="card flow-screen hidden">
+        <div class="flow-copy">
+          <p class="kicker">Step 2</p>
+          <h2>Choose Scenario, Then Designation</h2>
+          <p class="flow-text">
+            Select the simulation environment first. The available decision-maker roles will then
+            change to match that scenario.
+          </p>
+        </div>
+        <div class="setup-grid">
+          <div class="card flow-side">
+            <label class="setup-label" for="scenarioSelect">1. Simulation Scenario</label>
+            <select id="scenarioSelect"></select>
+            <p id="scenarioDescription" class="flow-note"></p>
+          </div>
+          <div class="card flow-side">
+            <label class="setup-label" for="leaderSelect">2. Decision-Maker Designation</label>
+            <select id="leaderSelect"></select>
+            <p id="leaderDescription" class="flow-note"></p>
+          </div>
+        </div>
+        <div class="flow-actions">
+          <button id="backToIntroBtn" class="ghost">Back</button>
+          <button id="launchSimulationBtn">Continue to Case Brief</button>
+        </div>
+      </article>
+
+      <article id="caseBriefScreen" class="card flow-screen case-brief-experience hidden">
+        <header class="case-brief-experience-head">
+          <div>
+            <p class="kicker">Case Brief</p>
+            <h2 id="caseBriefScenarioName">Mumbai Terror Aftermath</h2>
+            <p id="caseBriefRoleName" class="case-brief-role">Prime Minister of India</p>
+          </div>
+          <div class="case-brief-step-meta">
+            <span id="caseBriefStepLabel">Part 1 of 4</span>
+            <div id="caseBriefProgress" class="case-brief-progress" aria-label="Case brief progress"><i></i><i></i><i></i><i></i></div>
+          </div>
+        </header>
+        <section id="caseBrief" class="case-brief-slide" aria-live="polite">
+          <span id="caseBriefPartNumber" class="case-brief-part-number">01</span>
+          <div class="case-brief-slide-copy">
+            <p id="caseBriefEyebrow" class="case-brief-eyebrow">Situation</p>
+            <h3 id="caseBriefTitle">What this case is about</h3>
+            <div id="caseBriefBody" class="case-brief-body"></div>
+            <p id="caseBriefCue" class="case-brief-cue"></p>
+          </div>
+        </section>
+        <div class="case-brief-actions">
+          <button id="caseBriefBackBtn" class="ghost" type="button">Change Selection</button>
+          <div>
+            <button id="caseBriefPreviousBtn" class="ghost hidden" type="button">Previous</button>
+            <button id="caseBriefNextBtn" type="button">Next Part</button>
+            <button id="caseBriefContinueBtn" class="hidden" type="button">Continue to Orientation</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="simulationShell" class="simulation-shell hidden">
+      <header class="topbar card">
+        <div class="topbar-main">
+        <div>
+          <p class="kicker">Strategic Simulation</p>
+          <h1 class="brand-logo-frame brand-logo-header">
+            <img class="brand-logo-image" src="./assets/secondorder-logo.png" alt="SecondOrder">
+          </h1>
+          <p id="roleMeta" class="meta-line">Role: Prime Minister of India</p>
+          <p id="sessionMeta" class="meta-line hidden" aria-hidden="true">Session Timer: 07:00 remaining</p>
+          <p id="clockMeta" class="meta-line hidden" aria-hidden="true">Cycle Time: 2026-03-09 08:00</p>
+          <p id="escalationMeta" class="meta-line hidden" aria-hidden="true">Escalation Index: 28 | Stage: Diplomatic Protest</p>
+        </div>
+        <div class="topbar-indicators">
+          <div class="tolerance-card" aria-label="Constitutional tolerance load">
+            <div class="tolerance-head">
+              <span id="toleranceTitle">Tolerance load</span>
+              <strong id="toleranceLabel">0/50</strong>
+            </div>
+            <div class="tolerance-track">
+              <div id="toleranceBar" class="tolerance-fill"></div>
+            </div>
+            <div id="toleranceNote" class="tolerance-note">Red-line strikes 0/3</div>
+          </div>
+          <div class="session-timer-card" aria-label="Remaining session time">
+            <div class="session-pie-wrap">
+              <svg class="session-pie" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="session-pie-track" cx="60" cy="60" r="46"></circle>
+                <circle id="sessionTimerRing" class="session-pie-ring" cx="60" cy="60" r="46"></circle>
+              </svg>
+              <div id="sessionTimerLabel" class="session-pie-label">07:00</div>
+            </div>
+            <div class="session-pie-note">Scenario timer</div>
+          </div>
+        </div>
+        </div>
+        <div class="toolbar">
+          <button id="changeScenarioBtn" class="ghost">Change Setup</button>
+          <button id="applyScenarioBtn" class="ghost">Reload Scenario</button>
+          <button id="connectFileBtn" class="ghost">Connect Save</button>
+          <button id="exportBtn" class="ghost">Export</button>
+          <label class="ghost import-label">Import
+            <input id="importInput" type="file" accept="application/json" hidden>
+          </label>
+          <button id="resetBtn">Reset</button>
+        </div>
+      </header>
+
+      <nav id="simulationNav" class="simulation-nav card" aria-label="Simulation navigation">
+        <div class="nav-copy">
+          <strong>Simulation Pages</strong>
+          <span id="simPageHint">Use these pages to inspect second-order effects without losing the main decision flow.</span>
+        </div>
+        <div class="nav-actions">
+          <button class="sim-nav-btn active" type="button" data-sim-page="command">Command</button>
+          <button class="sim-nav-btn" type="button" data-sim-page="dashboard">Status</button>
+          <button class="sim-nav-btn" type="button" data-sim-page="briefing">Briefing</button>
+          <button class="sim-nav-btn" type="button" data-sim-page="operations">Operations</button>
+          <button class="sim-nav-btn" type="button" data-sim-page="impact">Impact</button>
+        </div>
+        <button id="firstDecisionNudge" class="first-decision-nudge hidden" type="button">
+          <span class="first-decision-pulse" aria-hidden="true"></span>
+          <span class="first-decision-copy">
+            <small>Live · Your next move</small>
+            <strong>Analyze the company, choose your priorities, then go to Strategy Desk to make your first move.</strong>
+          </span>
+        </button>
+        <button id="boardroomMeetingNavBtn" class="boardroom-meeting-nav" type="button">
+          <span class="boardroom-nav-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="boardroom-nav-copy">
+            <strong id="boardroomMeetingNavTitle">Boardroom Meeting</strong>
+            <small id="boardroomMeetingNavState">3-minute consultation · one use</small>
+          </span>
+          <span id="boardroomMeetingNavBadge" class="boardroom-nav-badge">Open</span>
+        </button>
+      </nav>
+
+      <section id="simulationLayout" class="layout nav-paged">
+      <div class="column">
+        <article class="card panel" data-sim-page-panel="dashboard">
+          <div class="panel-head">
+            <h2 id="dashboardTitle">War Room Dashboard</h2>
+            <span id="saveBadge" class="badge">Save: Local</span>
+          </div>
+          <div class="media-frame">
+            <img id="scenarioImage" alt="Scenario ground view" loading="lazy">
+          </div>
+          <div class="legend-row">
+            <strong id="liveMediaTitle">Ground-Zero Feed</strong>
+            <span id="liveMediaCaption"></span>
+          </div>
+          <a id="liveMediaLink" class="media-link" href="#" target="_blank" rel="noreferrer">Open source coverage</a>
+          <h3 class="subhead">Heat Maps</h3>
+          <div id="heatMaps" class="heat-grid"></div>
+          <h3 class="subhead">Live Alert Feed</h3>
+          <div id="liveFeedSummary" class="summary-box muted">Strategic live summary will appear here.</div>
+          <div id="alertFeed" class="feed"></div>
+        </article>
+
+        <article class="card panel" data-sim-page-panel="dashboard">
+          <div class="panel-head">
+            <h2 id="timerPanelTitle">Crisis Timers</h2>
+            <span class="badge amber">Active Countdowns</span>
+          </div>
+          <div id="crisisTimerList" class="feed"></div>
+          <h3 class="subhead">Pending Delayed Reactions</h3>
+          <div id="pendingList" class="feed"></div>
+        </article>
+      </div>
+
+      <div class="column">
+        <article class="card panel" data-sim-page-panel="command">
+          <div class="panel-head">
+            <h2 id="decisionConsoleTitle">Decision Console</h2>
+            <span class="badge teal">Scenario MCQs</span>
+          </div>
+          <p class="small">Explore one category at a time. Shortlist up to two choices across categories, compare their trade-offs, then implement your decision.</p>
+          <div class="decision-utility-bar">
+            <details class="decision-utility" id="priorityModeDetails">
+              <summary><span>Priorities</span><strong id="prioritySummary">0/3 pinned</strong></summary>
+              <div id="priorityPicker" class="priority-picker"></div>
+            </details>
+          </div>
+          <section id="reflectionPanel" class="reflection-panel hidden" role="dialog" aria-modal="true" aria-labelledby="reflectionPrompt">
+            <div class="reflection-card">
+              <span class="reflection-eyebrow">The boardroom wants to know</span>
+              <h2 id="reflectionPrompt">Why did you choose this direction?</h2>
+              <strong id="reflectionDecisionLabel" class="reflection-decision-label">Latest decision</strong>
+              <p>Pause before the next move. Explain the reasoning you want assessed, not the outcome you hope to see.</p>
+              <ul id="reflectionQuestionList" class="reflection-question-list"></ul>
+              <div class="reflection-controls">
+                <textarea id="reflectionInput" rows="3" maxlength="360" placeholder="My reasoning was..."></textarea>
+                <button id="reflectionSaveBtn" type="button">Submit to Board</button>
+              </div>
+            </div>
+          </section>
+          <div id="optionsWrap" class="options-wrap"></div>
+          <section id="decisionPreview" class="decision-preview hidden"></section>
+          <div id="advisorChallenge" class="advisor-challenge hidden"></div>
+          <label class="subhead hidden" for="customAction">Custom Action</label>
+          <textarea id="customAction" class="hidden" rows="4" placeholder="Custom decisions are disabled in this MCQ version."></textarea>
+          <div class="mini-note">Use the emergency meeting for questions and debate. Use this console only for controlled simulation decisions.</div>
+          <div class="decision-meta">
+            <div id="analysisMeta" class="mini-note">No active analysis window.</div>
+          </div>
+          <button id="executeBtn" class="execute">Implement Decision</button>
+          <section id="meetingPanel" class="meeting-panel boardroom-experience hidden" role="dialog" aria-modal="true" aria-labelledby="meetingPanelTitle">
+            <div id="boardroomTransition" class="boardroom-transition hidden" aria-hidden="true">
+              <div class="boardroom-door-mark"><i></i><span></span><i></i></div>
+              <span>Private session confirmed</span>
+              <strong>Entering the Boardroom</strong>
+              <div class="boardroom-transition-line"></div>
+            </div>
+            <div id="boardroomWorkspace" class="boardroom-workspace">
+              <header class="boardroom-header">
+                <div>
+                  <span class="boardroom-kicker">Conversation hub</span>
+                  <h3 id="meetingPanelTitle">Boardroom Stakeholder Meeting</h3>
+                </div>
+                <div class="boardroom-header-actions">
+                  <span class="boardroom-main-paused">Main timer paused</span>
+                  <span id="meetingTimerBadge" class="boardroom-timer">03:00</span>
+                  <button id="exitMeetingBtn" class="boardroom-close" type="button">Leave boardroom</button>
+                </div>
+              </header>
+
+              <section class="boardroom-stages" aria-label="Boardroom consultation stages">
+                <div class="complete"><span>1</span><strong>Situation</strong><small>Live evidence assembled</small></div>
+                <div class="active"><span>2</span><strong>Hear the Board</strong><small>Relevant voices selected</small></div>
+                <div><span>3</span><strong>Resolve Tension</strong><small>Expose trade-offs and gaps</small></div>
+                <div><span>4</span><strong>Take Forward</strong><small>Leave with an actionable test</small></div>
+              </section>
+
+              <section class="boardroom-conversation">
+                <div class="boardroom-conversation-head">
+                  <div><span>Guided roundtable</span><strong>Ask one sharp strategic question at a time</strong></div>
+                  <span id="meetingNotice">Three minutes. Main simulation timer paused. One use per simulation.</span>
+                </div>
+                <div id="meetingChatLog" class="boardroom-chat"></div>
+                <div id="boardroomPromptChips" class="boardroom-prompt-chips boardroom-prompt-chips-compact">
+                  <button type="button" data-boardroom-prompt="How should we expand without stretching operating capacity or service quality?">Pressure-test expansion</button>
+                  <button type="button" data-boardroom-prompt="How should we improve our financial position while protecting long-term brand value?">Protect financial position</button>
+                  <button type="button" data-boardroom-prompt="Which risk should we resolve before making the next major portfolio decision?">Identify the critical risk</button>
+                </div>
+                <div class="boardroom-compose">
+                  <textarea id="meetingInput" class="chat-input" rows="2" maxlength="1000" aria-label="Your question to the board" placeholder="Ask a question or challenge an assumption. Enter to send · Shift+Enter for a new line."></textarea>
+                  <button id="sendMeetingBtn" type="button">Ask the Board</button>
+                </div>
+              </section>
+
+              <details class="boardroom-settings">
+                <summary>Conversation engine settings</summary>
+                <div class="llm-controls">
+                  <label for="ollamaModelInput">Local LLM</label>
+                  <input id="ollamaModelInput" type="text" value="hf.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M" placeholder="Example: hf.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF:Q4_K_M">
+                  <button id="ollamaTestBtn" class="ghost" type="button">Test Ollama</button>
+                  <span id="ollamaStatus" class="mini-note">Ollama optional. Fallback rules active.</span>
+                </div>
+              </details>
+            </div>
+          </section>
+          <h3 class="subhead">Consequence Chain</h3>
+          <div id="outcomeSummary" class="summary-box muted">Decision summary will appear here after you act.</div>
+          <div id="outcome" class="hidden" aria-hidden="true"></div>
+        </article>
+
+        <article id="operationsPanel" class="card panel" data-sim-page-panel="operations">
+          <div class="panel-head">
+            <h2 id="operationsTitle">Military Operations Map</h2>
+            <span id="operationsBadge" class="badge">Command Interface</span>
+          </div>
+          <div id="operationsVisual" class="operations-visual"></div>
+          <p class="mini-note">Operational choices are now handled through the categorized MCQs in the Command page to keep scoring consistent.</p>
+          <label id="operationsInputLabel" class="subhead hidden" for="militaryOperationInput">Open Military Operation</label>
+          <textarea id="militaryOperationInput" class="hidden" rows="3" placeholder="Open-ended operations are disabled in this MCQ version."></textarea>
+          <button id="executeMilitaryOperationBtn" class="ghost full-width hidden">Execute Operation</button>
+        </article>
+
+        <article id="emergencyStrategyPanel" class="card panel emergency-room hidden" data-sim-page-panel="operations">
+          <div class="panel-head">
+            <h2>Emergency Strategy Room</h2>
+            <span id="emergencyCrisisBadge" class="badge amber">No Active Controversy</span>
+          </div>
+          <a id="strategyRoomBoardroomVisual" class="strategy-room-boardroom-image" href="https://commons.wikimedia.org/wiki/File:Exec_Boardroom.jpg" target="_blank" rel="noreferrer" aria-label="Executive Boardroom photograph by Marketingscmocc, CC BY-SA 4.0">
+            <img src="./assets/executive-boardroom.jpg" alt="Executive boardroom prepared for a strategic meeting">
+            <span class="strategy-room-live-badge">Live emergency room</span>
+            <span class="strategy-room-visual-copy">
+              <small id="strategyRoomCrisisKicker">Situation monitoring</small>
+              <strong id="strategyRoomCrisisTitle">Boardroom standing by</strong>
+            </span>
+          </a>
+          <div id="controversyRoomBriefing" class="summary-box muted">No viral controversy is active yet. After 2-3 decisions, a high-pressure reputation crisis may emerge.</div>
+          <div id="controversyTracker" class="controversy-tracker"></div>
+          <h3 class="subhead">Situation Snapshot</h3>
+          <div id="controversyMediaWall" class="media-wall"></div>
+          <div id="crisisControlStrip" class="crisis-control-strip"></div>
+          <h3 class="subhead">Crisis Response MCQs</h3>
+          <div id="controversyResponseOptions" class="crisis-options"></div>
+          <h3 class="subhead">Public Statement MCQ</h3>
+          <div id="publicStatementOptions" class="crisis-options statement-options"></div>
+          <h3 class="subhead">Major Strategic Calls</h3>
+          <div id="controversyMajorDecisions" class="major-decision-grid"></div>
+          <button id="controversyMeetingBtn" class="ghost full-width" type="button">Convene 10-Minute Crisis Huddle</button>
+          <h3 class="subhead">War-Room Updates</h3>
+          <div id="controversyLiveFeed" class="feed compact-feed"></div>
+        </article>
+
+        <article id="covertPanel" class="card panel" data-sim-page-panel="operations">
+          <div class="panel-head">
+            <h2 id="covertTitle">Covert Operations</h2>
+            <span id="covertBadge" class="badge amber">Secret Actions</span>
+          </div>
+          <div id="covertOpsList" class="options-wrap"></div>
+        </article>
+      </div>
+
+      <div class="column">
+        <article class="card panel" data-sim-page-panel="briefing">
+          <div class="panel-head">
+            <h2 id="briefingPanelTitle">Intelligence Briefing</h2>
+            <span id="intelConfidenceBadge" class="badge amber">Confidence</span>
+          </div>
+          <div id="intelBriefing" class="feed"></div>
+        </article>
+
+        <article class="card panel" data-sim-page-panel="impact">
+          <div class="panel-head">
+            <h2 id="impactPanelTitle">Impact Windows</h2>
+            <span class="badge">Focused Views</span>
+          </div>
+          <div class="compare-strip" id="impactCompareStrip">
+            <span id="impactCompareStatus">Current live scenario</span>
+            <div class="compare-actions">
+              <button id="viewPreDecisionBtn" class="ghost small-btn" type="button">View Before Last Decision</button>
+              <button id="viewCurrentScenarioBtn" class="ghost small-btn" type="button">Return to Current Scenario</button>
+            </div>
+          </div>
+
+          <section id="businessScorecardPanel" class="business-scorecard hidden">
+            <div id="businessKpiGrid" class="scorecard-kpi-grid"></div>
+            <div class="scorecard-visual-grid">
+              <article id="performanceTrendCard" class="scorecard-chart-card">
+                <div class="scorecard-section-head">
+                  <div>
+                    <strong>Performance trend <span class="metric-info" tabindex="0" role="note" title="Plots each decision against the starting position. Read direction and consistency together, not one isolated point." aria-label="Performance trend plots each recorded decision against the starting position. Read direction and consistency together, not one isolated point.">i</span></strong>
+                    <span>Movement across recorded decisions</span>
+                  </div>
+                  <div class="trend-legend" aria-label="Chart legend">
+                    <span><i class="trend-dot revenue"></i>Revenue</span>
+                    <span><i class="trend-dot margin"></i>Margin</span>
+                    <span><i class="trend-dot trust"></i>Trust</span>
+                  </div>
+                </div>
+                <canvas id="businessTrendChart" height="220" aria-label="Business performance trend chart"></canvas>
+              </article>
+              <article class="scorecard-chart-card health-mix-card">
+                <div class="scorecard-section-head">
+                  <div>
+                    <strong>Company health mix</strong>
+                    <span>Relative strength of the business</span>
+                  </div>
+                </div>
+                <div class="health-mix-body">
+                  <div id="businessHealthDonut" class="health-donut" role="img" aria-label="Company health mix">
+                    <div class="health-donut-center"><strong id="businessHealthScore">0</strong><span>overall</span></div>
+                  </div>
+                  <div id="businessHealthLegend" class="health-legend"></div>
+                </div>
+              </article>
+            </div>
+            <div class="scorecard-section-head metric-section-head">
+              <div>
+                <strong>Supporting indicators</strong>
+                <span>Six parameters with the highest decision value</span>
+              </div>
+            </div>
+            <div id="businessScorecardMetrics" class="scorecard-metric-grid"></div>
+            <section class="scorecard-newsroom" aria-labelledby="scorecardNewsTitle">
+              <div class="scorecard-section-head newsroom-head">
+                <div>
+                  <strong id="scorecardNewsTitle">Decision Newsroom</strong>
+                  <span>Three current headlines. Open one to see why it matters.</span>
+                </div>
+                <span class="newsroom-live"><i></i>Live pulse</span>
+              </div>
+              <div id="businessHeadlineDeck" class="scorecard-headline-deck"></div>
+            </section>
+            <section id="companyStockMarket" class="company-stock-market flat" aria-labelledby="companyStockTitle">
+              <div class="stock-market-head">
+                <div class="stock-identity">
+                  <span class="stock-exchange">SECONDORDER SIMULATED EXCHANGE</span>
+                  <strong id="companyStockTitle">BOAT.SIM <small>boAt Limited</small></strong>
+                </div>
+                <span class="stock-market-live"><i></i>Market live</span>
+              </div>
+              <div class="stock-market-grid">
+                <div class="stock-quote-block">
+                  <span>Last traded price</span>
+                  <strong id="companyStockPrice">₹842.60</strong>
+                  <div id="companyStockChange" class="stock-change">₹0.00 <b>0.00%</b></div>
+                  <small id="companyStockDirection">Awaiting the first company decision</small>
+                </div>
+                <div class="stock-chart-shell">
+                  <canvas id="companyStockChart" height="210" aria-label="Live simulated company stock price chart"></canvas>
+                  <div class="stock-chart-labels"><span>SESSION OPEN</span><span>DECISION-DRIVEN PRICE</span><span>LIVE</span></div>
+                </div>
+                <div class="stock-session-stats" aria-label="Stock session statistics">
+                  <div><span>Open</span><strong id="companyStockOpen">₹842.60</strong></div>
+                  <div><span>High</span><strong id="companyStockHigh">₹842.60</strong></div>
+                  <div><span>Low</span><strong id="companyStockLow">₹842.60</strong></div>
+                  <div><span>Volume</span><strong id="companyStockVolume">220K</strong></div>
+                  <p id="companyStockFundamentals">Price follows growth, margin, trust, board confidence and operating risk.</p>
+                </div>
+              </div>
+            </section>
+          </section>
+
+          <div id="standardImpactTabs">
+            <div class="tab-strip">
+              <button id="tabDomesticBtn" class="ghost tab-btn tab-btn-active">Domestic</button>
+              <button id="tabWorldBtn" class="ghost tab-btn">World</button>
+              <button id="tabEconomyBtn" class="ghost tab-btn">Economy</button>
+            </div>
+            <section id="tabDomesticPanel" class="tab-panel">
+              <div class="panel-head">
+                <h2 id="domesticPanelTitle">Domestic Politics & Media</h2>
+                <span class="badge">Public Pressure</span>
+              </div>
+              <div id="domesticGrid" class="metric-grid"></div>
+              <h3 id="sentimentPanelTitle" class="subhead">National Sentiment</h3>
+              <div id="sentimentGrid" class="metric-grid"></div>
+              <h3 id="headlinesPanelTitle" class="subhead">Headlines</h3>
+              <div id="headlineFeed" class="feed"></div>
+            </section>
+            <section id="tabWorldPanel" class="tab-panel hidden">
+              <div class="panel-head">
+                <h2 id="worldPanelTitle">World Response Dashboard</h2>
+                <span class="badge">Global Actors</span>
+              </div>
+              <div id="globalReactionFeed" class="feed"></div>
+            </section>
+            <section id="tabEconomyPanel" class="tab-panel hidden">
+              <div class="panel-head">
+                <h2 id="economyPanelTitle">Economy Simulator</h2>
+                <span class="badge">Macro Stress</span>
+              </div>
+              <div id="economyGrid" class="metric-grid"></div>
+            </section>
+          </div>
+        </article>
+
+        <article id="leadershipPanel" class="card panel" data-sim-page-panel="impact">
+          <div class="panel-head">
+            <h2 id="leadershipPanelTitle">Leadership Meter</h2>
+            <span id="leadershipBadge" class="badge">Leadership Stability</span>
+          </div>
+          <div id="leadershipCard" class="outcome"></div>
+        </article>
+      </div>
+      </section>
+
+      <footer class="footer card">
+        <p id="statusLine">Ready.</p>
+        <div class="footer-actions">
+          <button id="tickToggleBtn" class="ghost">Dynamic Engine: On</button>
+          <button id="reloadBtn" class="ghost">Reload State</button>
+        </div>
+      </footer>
+    </section>
+
+    <section id="onboardingPanel" class="onboarding-panel guided-tour hidden" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+      <div id="tourSpotlight" class="tour-spotlight" aria-hidden="true"></div>
+      <article id="tourCoachmark" class="tour-coachmark coach-right">
+        <header class="tour-coachmark-head">
+          <span id="onboardingStepLabel" class="onboarding-eyebrow">Guided tour 1 of 7</span>
+          <div id="onboardingProgress" class="onboarding-progress" aria-label="Onboarding progress"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </header>
+        <h2 id="onboardingTitle">Strategy Desk</h2>
+        <div id="onboardingBody" class="tour-body"></div>
+        <div id="onboardingCue" class="tour-cue"></div>
+        <footer class="tour-actions">
+          <button id="onboardingBackBtn" class="ghost hidden" type="button">Back</button>
+          <span>Timer paused</span>
+          <button id="onboardingNextBtn" type="button">Next</button>
+          <button id="onboardingStartBtn" class="hidden" type="button">Start Playing</button>
+        </footer>
+      </article>
+    </section>
+
+    <section id="controversyModal" class="controversy-modal hidden" aria-live="assertive">
+      <div class="controversy-backdrop"></div>
+      <div id="crisisTransition" class="crisis-transition hidden" role="status">
+        <div class="danger-triangle" aria-hidden="true"><span>!</span></div>
+        <p>Critical situation detected</p>
+        <h2>Activating emergency protocol</h2>
+        <div class="crisis-scan-line"><span></span></div>
+        <small>Verifying live signals and opening the incident brief</small>
+      </div>
+      <div id="controversyModalCard" class="controversy-modal-card">
+        <div class="breaking-ribbon"><span class="breaking-pulse"></span> BREAKING CORPORATE CRISIS</div>
+        <div class="panel-head">
+          <div>
+            <p id="controversyModalKicker" class="kicker">Emergency Alert</p>
+            <h2 id="controversyModalTitle">Viral Controversy Detected</h2>
+          </div>
+          <span id="controversyModalSeverity" class="badge amber">Severity</span>
+        </div>
+        <div class="crisis-incident-layout">
+          <div class="crisis-visual-stage">
+            <img src="./assets/executive-boardroom.jpg" alt="Executive boardroom during an emergency corporate response">
+            <div class="crisis-visual-shade"></div>
+            <div id="controversyVideo" class="crisis-live-footage"></div>
+          </div>
+          <div class="crisis-brief-stack">
+            <div id="controversyNewspaper" class="news-clipping"></div>
+            <div id="controversyTweet" class="viral-card tweet-card"></div>
+            <div id="controversyReel" class="viral-card reel-card"></div>
+          </div>
+        </div>
+        <div id="controversyModalSentiment" class="sentiment-strip"></div>
+        <div class="flow-actions">
+          <button id="controversyGoRoomBtn" type="button">Enter Emergency Strategy Room</button>
+          <button id="controversyModalCloseBtn" class="ghost" type="button">Keep Monitoring</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sessionReportPanel" class="card flow-screen hidden">
+      <div class="flow-copy report-intro">
+        <p class="kicker">Session Complete</p>
+        <h2>Your Simulation Report</h2>
+        <p class="flow-text">A concise review of your result, capabilities, pivotal decisions, and next priorities.</p>
+      </div>
+      <div id="sessionReportContent" class="session-report-content"></div>
+      <div class="flow-actions report-actions-bar">
+        <button id="reportRestartBtn">Start New Simulation</button>
+        <button id="reportSetupBtn" class="ghost">Return To Setup</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="./simulation-logic.js?v=20260721-2"></script>
+  <script src="./simulation-workspaces.js?v=20261106-1"></script>
+  <script src="./session-clock.js?v=20261107-1"></script>
+  <script src="./emergency-flow.js?v=20261107-1"></script>
+  <script src="./emergency-room.js?v=20261107-1"></script>
+  <script src="./pm-interface.js?v=20261107-1"></script>
+  <script src="./assessment-pdf.js?v=20261105-1"></script>
+  <script src="./final-review-model.js?v=20261105-1"></script>
+  <script src="./final-review-pdf.js?v=20261105-1"></script>
+  <script src="./ai-assessment-embedded.js?v=20261107-1"></script>
+  <script src="./final-review.js?v=20261105-1"></script>
+</body>
+</html>
+
+
+

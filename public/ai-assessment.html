@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SecondOrder AI Assessor</title>
+  <link rel="stylesheet" href="./ai-assessment.css?v=20260721-1">
+</head>
+<body>
+  <main class="assessment-shell">
+    <header class="assessment-header">
+      <div>
+        <span class="mode-label">Optional assessment layer</span>
+        <img src="./assets/secondorder-logo.png" alt="SecondOrder">
+        <p>Evidence-bound analysis of a completed simulation journey.</p>
+      </div>
+      <div class="connection-card">
+        <span id="serverStatusDot" aria-hidden="true"></span>
+        <div><small>Assessment server</small><strong id="serverStatus">Checking...</strong></div>
+      </div>
+    </header>
+
+    <section class="assessment-intro">
+      <div>
+        <span class="section-number">01</span>
+        <h1>Load a completed session</h1>
+        <p>The original simulation remains unchanged. Load its local save or import the JSON created by its existing Export button.</p>
+      </div>
+      <div class="source-actions">
+        <button id="loadBrowserSessionBtn" type="button">Load Browser Session</button>
+        <label class="file-button" for="sessionFileInput">Import Exported JSON</label>
+        <input id="sessionFileInput" type="file" accept="application/json,.json">
+      </div>
+    </section>
+
+    <section id="evidencePanel" class="evidence-panel empty">
+      <div class="evidence-empty">
+        <strong>No session loaded</strong>
+        <span>Complete a simulation, then load or import its saved evidence.</span>
+      </div>
+      <div class="evidence-ready hidden">
+        <div class="evidence-title">
+          <span>Session evidence ready</span>
+          <h2 id="scenarioName">Simulation</h2>
+          <p id="sessionMeta"></p>
+        </div>
+        <div class="evidence-counts">
+          <article><span>Decisions</span><strong id="decisionCount">0</strong></article>
+          <article><span>Reflections</span><strong id="reflectionCount">0</strong></article>
+          <article><span>Boardroom rounds</span><strong id="boardroomCount">0</strong></article>
+          <article><span>Emergencies</span><strong id="emergencyCount">0</strong></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="generate-panel">
+      <div>
+        <span class="section-number">02</span>
+        <h2>Generate the behavioural assessment</h2>
+        <p>The AI can interpret evidence, but it cannot alter deterministic simulation scores.</p>
+      </div>
+      <button id="generateAssessmentBtn" type="button" disabled>Generate Assessment</button>
+    </section>
+
+    <section id="assessmentStatusPanel" class="assessment-status hidden" aria-live="polite">
+      <span class="status-spinner" aria-hidden="true"></span>
+      <div><strong id="assessmentStatusTitle">Reviewing the session</strong><p id="assessmentStatusText">Linking conclusions to recorded evidence...</p></div>
+    </section>
+
+    <section id="assessmentResult" class="assessment-result hidden">
+      <div class="result-hero">
+        <div class="reasoning-score"><strong id="overallReasoningScore">0</strong><span>/100 reasoning</span></div>
+        <div><span class="section-number">03</span><h2 id="assessmentHeadline">Assessment</h2><p id="executiveSummary"></p></div>
+      </div>
+      <div id="dimensionGrid" class="dimension-grid"></div>
+      <div class="result-lower">
+        <article><span>Demonstrated strengths</span><ul id="strengthList"></ul></article>
+        <article><span>Development priorities</span><ul id="priorityList"></ul></article>
+        <article><span>Faculty note</span><p id="facultyNote"></p></article>
+      </div>
+      <details class="assessment-limitations"><summary>Assessment boundaries</summary><ul id="limitationList"></ul></details>
+      <div class="result-actions"><button id="downloadAssessmentBtn" type="button">Download Assessment JSON</button></div>
+    </section>
+
+    <p id="pageMessage" class="page-message" aria-live="polite"></p>
+  </main>
+
+  <script src="./simulation-logic.js"></script>
+  <script src="./ai-assessment.js?v=20260721-1"></script>
+</body>
+</html>
